@@ -1,28 +1,33 @@
 #include <iostream>
-#include <fstream>
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 int main()
 {
 	const int width = 256;
 	const int height = 256;
 
-	std::ofstream outfile("../Output/Image.ppm", std::ios::out);
-	outfile << "P3" << std::endl << width << " " << height << std::endl << 255 << std::endl;
+	const char* path = "../Output/Image.png";
 
-	for (int j = height - 1; j >= 0; --j)
+	unsigned char* frame = new unsigned char[width * height * 3];
+	for (int j = 0; j < height; ++j)
 	{
 		for (int i = 0; i < width; ++i)
 		{
-			auto r = (double)i / (width - 1);
-			auto g = (double)j / (height - 1);
-			auto b = 0.25;
+			double r = (double)i / (width - 1.0);
+			double g = (double)j / (height - 1.0);
+			double b = 0.25;
 
-			int ir = static_cast<int>(255.999 * r);
-			int ig = static_cast<int>(255.999 * g);
-			int ib = static_cast<int>(255.999 * b);
+			auto ir = static_cast<unsigned char>(255.999 * r);
+			auto ig = static_cast<unsigned char>(255.999 * g);
+			auto ib = static_cast<unsigned char>(255.999 * b);
 
-			outfile << ir << ' ' << ig << ' ' << ib << std::endl;
+			frame[3 * (j * height + i)    ] = ir;
+			frame[3 * (j * height + i) + 1] = ig;
+			frame[3 * (j * height + i) + 2] = ib;
 		}
 	}
+	stbi_write_png(path, width, height, 3, frame, 0);
 	return 0;
 }
