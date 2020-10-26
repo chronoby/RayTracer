@@ -363,3 +363,6 @@ FodyWeavers.xsd
 
 # Referenced Libraries
 stb_image_write.h
+
+# Output
+Image.png

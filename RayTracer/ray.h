@@ -10,7 +10,7 @@ public:
 		: r_origin(orig), r_direction(dire) { }
 	inline vec3 origin() const { return r_origin; }
 	inline vec3 direction() const { return r_direction; }
-
+	inline vec3 at(double t) const { return r_origin + t * r_direction; }
 private:
 	vec3 r_origin;
 	vec3 r_direction;
