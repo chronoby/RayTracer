@@ -9,9 +9,9 @@ void write_color(unsigned char* frame, vec3 pixel_color, int pos, int samples_pe
 	
 	// Divede the color by the number of samples
 	auto scale = 1.0 / samples_per_pixel;
-	r *= scale;
-	g *= scale;
-	b *= scale;
+	r = sqrt(scale * r);
+	g = sqrt(scale * g);
+	b = sqrt(scale * b);
 	frame[pos    ] = static_cast<unsigned char>(256 * clamp(r, 0.0, 0.999));
 	frame[pos + 1] = static_cast<unsigned char>(256 * clamp(g, 0.0, 0.999));
 	frame[pos + 2] = static_cast<unsigned char>(256 * clamp(b, 0.0, 0.999));

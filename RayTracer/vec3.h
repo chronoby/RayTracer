@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 
+#include "util.h"
+
 class vec3
 {
 public:
@@ -45,6 +47,16 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& os, const vec3& v);
 
+	inline static vec3 random()
+	{
+		return vec3(random_double(), random_double(), random_double());
+	}
+
+	inline static vec3 random(double min, double max)
+	{
+		return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+	}
+
 private:
 	double val[3];
 };
@@ -66,6 +78,12 @@ double dot(const vec3& lhs, const vec3& rhs);
 vec3 cross(const vec3& lhs, const vec3& rhs);
 
 vec3 unit_vector(vec3 v);
+
+vec3 random_unit_vector();
+
+vec3 random_in_unit_sphere();
+
+vec3 random_in_hemisphere(const vec3& normal);
 
 using point3 = vec3;
 using color = vec3;
