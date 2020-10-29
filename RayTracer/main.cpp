@@ -6,6 +6,7 @@
 #include "sphere.h"
 #include "hittable_list.h"
 #include "util.h"
+#include "camera.h"
 
 vec3 ray_color(const ray& r, const hittable& world)
 {
@@ -25,6 +26,7 @@ int main()
 	const double aspect_ratio = 16.0 / 9.0;
 	const int image_width = 400;
 	const int image_height = static_cast<int>(image_width / aspect_ratio);
+	const int sample_per_pixel = 100;
 	
 	// world
 	hittable_list world;
@@ -32,15 +34,9 @@ int main()
 	world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
 
 	// camera
-	double viewport_height = 2.0;
-	double viewport_width = aspect_ratio * viewport_height;
-	double focal_length = 1.0;
+	camera cam;
 
-	auto origin = vec3(0, 0, 0);
-	auto horizontal = vec3(viewport_width, 0, 0);
-	auto vertical = vec3(0, viewport_height, 0);
-	auto lower_left_corner = origin - horizontal / 2 - vertical / 2 - vec3(0, 0, focal_length);
-
+	// render
 	const char* path = "../Output/Image.png";
 
 	unsigned char* frame = new unsigned char[image_width * image_height * 3];
@@ -50,11 +46,15 @@ int main()
 		double v = (double)j / (image_height - 1.0);
 		for (int i = 0; i < image_width; ++i)
 		{
-			double u = (double)i / (image_width - 1.0);
-			ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-
-			vec3 pixel_color = ray_color(r, world);
-			write_color(frame, pixel_color, 3 * ((image_height - j - 1) * image_width + i));
+			color pixel_color(0, 0, 0);
+			for (int s = 0; s < sample_per_pixel; ++s)
+			{
+				auto u = (i + random_double()) / (image_width - 1);
+				auto v = (j + random_double()) / (image_height - 1);
+				ray r = cam.get_ray(u, v);
+				pixel_color += ray_color(r, world);
+			}
+			write_color(frame, pixel_color, 3 * ((image_height - j - 1) * image_width + i), sample_per_pixel);
 		}
 	}
 	stbi_write_png(path, image_width, image_height, 3, frame, 0);
